@@ -1,30 +1,14 @@
-import { ref, get, set, remove } from "firebase/database";
-import { db } from "@/lib/firebase";
 import { CartItem } from "@/types/product";
 
-const CARTS_PATH = "carts";
-
-// Gera ou recupera um ID único para o usuário (pode ser substituído por autenticação)
-const getUserId = (): string => {
-  let userId = localStorage.getItem("userId");
-  if (!userId) {
-    userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem("userId", userId);
-  }
-  return userId;
-};
+const CART_STORAGE_KEY = "shopping-cart";
 
 export const cartService = {
-  // Buscar carrinho do usuário
+  // Buscar carrinho do localStorage
   async getCart(): Promise<CartItem[]> {
     try {
-      const userId = getUserId();
-      const cartRef = ref(db, `${CARTS_PATH}/${userId}`);
-      const snapshot = await get(cartRef);
-      
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        return data.items || [];
+      const cartData = localStorage.getItem(CART_STORAGE_KEY);
+      if (cartData) {
+        return JSON.parse(cartData);
       }
       return [];
     } catch (error) {
@@ -33,15 +17,10 @@ export const cartService = {
     }
   },
 
-  // Salvar carrinho do usuário
+  // Salvar carrinho no localStorage
   async saveCart(items: CartItem[]): Promise<void> {
     try {
-      const userId = getUserId();
-      const cartRef = ref(db, `${CARTS_PATH}/${userId}`);
-      await set(cartRef, {
-        items,
-        updatedAt: new Date().toISOString()
-      });
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
     } catch (error) {
       console.error("Erro ao salvar carrinho:", error);
       throw error;
@@ -51,9 +30,7 @@ export const cartService = {
   // Limpar carrinho
   async clearCart(): Promise<void> {
     try {
-      const userId = getUserId();
-      const cartRef = ref(db, `${CARTS_PATH}/${userId}`);
-      await remove(cartRef);
+      localStorage.removeItem(CART_STORAGE_KEY);
     } catch (error) {
       console.error("Erro ao limpar carrinho:", error);
       throw error;
