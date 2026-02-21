@@ -2,10 +2,23 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 
 export function FeaturedProducts() {
+  const { products, isLoading } = useProducts();
   const featuredProducts = products.slice(0, 4);
+
+  if (isLoading) {
+    return (
+      <section className="py-16 lg:py-24 bg-background">
+        <div className="container">
+          <div className="text-center">
+            <p className="text-muted-foreground">Carregando produtos...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 lg:py-24 bg-background">

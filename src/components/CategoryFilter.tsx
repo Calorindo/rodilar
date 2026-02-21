@@ -1,4 +1,4 @@
-import { categories } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 
 interface CategoryFilterProps {
   selectedCategory: string;
@@ -6,6 +6,8 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter({ selectedCategory, onSelectCategory }: CategoryFilterProps) {
+  const { categories } = useProducts();
+  
   return (
     <div className="flex flex-wrap gap-2">
       {categories.map((category) => (

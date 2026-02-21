@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { CartItem, Product } from '@/types/product';
 import { toast } from 'sonner';
+import { cartService } from '@/services/cartService';
 
 interface CartContextType {
   items: CartItem[];
@@ -10,12 +11,37 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  isLoading: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const cartItems = await cartService.getCart();
+        setItems(cartItems);
+      } catch (error) {
+        console.error("Erro ao carregar carrinho:", error);
+        toast.error("Erro ao carregar carrinho");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadCart();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      cartService.saveCart(items).catch((error) => {
+        console.error("Erro ao sincronizar carrinho:", error);
+      });
+    }
+  }, [items, isLoading]);
 
   const addToCart = useCallback((product: Product) => {
     setItems((prevItems) => {
@@ -55,9 +81,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   }, [removeFromCart]);
 
-  const clearCart = useCallback(() => {
-    setItems([]);
-    toast.info('Carrinho limpo');
+  const clearCart = useCallback(async () => {
+    try {
+      await cartService.clearCart();
+      setItems([]);
+      toast.info('Carrinho limpo');
+    } catch (error) {
+      console.error("Erro ao limpar carrinho:", error);
+      toast.error("Erro ao limpar carrinho");
+    }
   }, []);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -76,6 +108,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        isLoading,
       }}
     >
       {children}

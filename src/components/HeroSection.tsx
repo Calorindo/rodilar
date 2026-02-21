@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ShoppingBag, Truck, Shield, Headphones } from 'lucide-react';
-import heroBanner from '@/assets/hero-banner.jpg';
+import { ArrowRight, ShoppingBag, Truck, Shield, Headphones, Package, Container, Boxes } from 'lucide-react';
 
 export function HeroSection() {
   return (
@@ -44,23 +43,68 @@ export function HeroSection() {
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/contato">
+              <Link to="/catalogos">
                 <Button variant="hero-outline" size="xl" className="w-full sm:w-auto">
-                  Fale Conosco
+                  Ver Catálogos
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Hero Image */}
+          {/* Hero Visual - Product Icons Grid */}
           <div className="relative animate-fade-in-up animation-delay-400">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src={heroBanner}
-                alt="Produtos plásticos de qualidade"
-                className="w-full h-auto object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gremio-black/30 to-transparent" />
+            <div className="relative">
+              {/* Main Product Display */}
+              <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 p-12 shadow-2xl">
+                <div className="grid grid-cols-3 gap-8">
+                  {/* Product Icons */}
+                  <div className="flex flex-col items-center gap-3 animate-float">
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <Package className="w-10 h-10 text-white" />
+                    </div>
+                    <span className="text-xs text-white/80 font-medium">Baldes</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-3 animate-float animation-delay-100">
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <Container className="w-10 h-10 text-white" />
+                    </div>
+                    <span className="text-xs text-white/80 font-medium">Potes</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-3 animate-float animation-delay-200">
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <Boxes className="w-10 h-10 text-white" />
+                    </div>
+                    <span className="text-xs text-white/80 font-medium">Caixas</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-3 animate-float animation-delay-300">
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <ShoppingBag className="w-10 h-10 text-white" />
+                    </div>
+                    <span className="text-xs text-white/80 font-medium">Sacolas</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-3 animate-float animation-delay-100">
+                    <div className="w-20 h-20 rounded-2xl bg-accent/80 backdrop-blur-sm flex items-center justify-center border border-accent shadow-lg shadow-accent/50">
+                      <Package className="w-10 h-10 text-gremio-black" />
+                    </div>
+                    <span className="text-xs text-white/80 font-medium">Destaque</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-3 animate-float animation-delay-200">
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <Container className="w-10 h-10 text-white" />
+                    </div>
+                    <span className="text-xs text-white/80 font-medium">Utilidades</span>
+                  </div>
+                </div>
+                
+                {/* Decorative Elements */}
+                <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-accent/20 blur-2xl"></div>
+                <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full bg-primary/20 blur-2xl"></div>
+              </div>
             </div>
             
             {/* Floating Badge */}

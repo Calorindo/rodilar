@@ -3,10 +3,11 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 import { Search } from 'lucide-react';
 
 const Produtos = () => {
+  const { products, isLoading } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -19,7 +20,7 @@ const Produtos = () => {
         .includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [products, selectedCategory, searchQuery]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -65,7 +66,13 @@ const Produtos = () => {
             </p>
 
             {/* Products Grid */}
-            {filteredProducts.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground text-lg">
+                  Carregando produtos...
+                </p>
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredProducts.map((product, index) => (
                   <div
