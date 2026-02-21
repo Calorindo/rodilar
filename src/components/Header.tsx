@@ -74,16 +74,7 @@ export function Header() {
           </button>
         </nav>
 
-        <div className="flex items-center gap-4">
-          {user && hasAccess && (
-            <Link to="/admin">
-              <Button variant="outline" size="sm" className="hidden sm:flex gap-2">
-                <Lock className="h-4 w-4" />
-                Admin
-              </Button>
-            </Link>
-          )}
-          
+        <div className="flex items-center gap-2">
           <Link to="/carrinho">
             <Button variant="outline" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
@@ -92,6 +83,12 @@ export function Header() {
                   {totalItems}
                 </span>
               )}
+            </Button>
+          </Link>
+
+          <Link to={user && hasAccess ? "/admin" : "/login"}>
+            <Button variant="outline" size="icon" title={user && hasAccess ? "Painel Admin" : "Login Admin"}>
+              <Lock className="h-5 w-5" />
             </Button>
           </Link>
 
@@ -135,16 +132,14 @@ export function Header() {
               <MessageCircle className="h-4 w-4" />
               Contato
             </button>
-            {user && hasAccess && (
-              <Link
-                to="/admin"
-                className="font-medium transition-colors hover:text-primary py-2 text-muted-foreground flex items-center gap-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Lock className="h-4 w-4" />
-                Admin
-              </Link>
-            )}
+            <Link
+              to={user && hasAccess ? "/admin" : "/login"}
+              className="font-medium transition-colors hover:text-primary py-2 text-muted-foreground flex items-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Lock className="h-4 w-4" />
+              {user && hasAccess ? 'Painel Admin' : 'Login Admin'}
+            </Link>
           </nav>
         </div>
       )}

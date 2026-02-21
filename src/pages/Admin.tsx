@@ -305,9 +305,27 @@ export default function Admin() {
     if (!settings) return;
     
     try {
+      // Limpar o número removendo espaços, hífens e parênteses
+      const cleanNumber = settings.whatsappNumber.replace(/[\s\-\(\)]/g, '');
+      
+      // Validar se contém apenas números
+      if (!/^\d+$/.test(cleanNumber)) {
+        toast.error('O número deve conter apenas dígitos');
+        return;
+      }
+      
+      // Validar tamanho mínimo (código país + DDD + número)
+      if (cleanNumber.length < 12) {
+        toast.error('Número muito curto. Use o formato: 5551999999999');
+        return;
+      }
+      
       await settingsService.updateSettings({
-        whatsappNumber: settings.whatsappNumber,
+        whatsappNumber: cleanNumber,
       });
+      
+      // Atualizar o estado com o número limpo
+      setSettings(prev => prev ? { ...prev, whatsappNumber: cleanNumber } : null);
       
       toast.success('Configurações atualizadas com sucesso!');
     } catch (error) {
@@ -952,14 +970,22 @@ export default function Admin() {
                           required
                         />
                         <p className="text-sm text-muted-foreground">
-                          Formato: Código do país + DDD + Número (ex: 5551992155747)
+                          <strong>Formato correto:</strong> Apenas números - Código do país + DDD + Número
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          ✅ Correto: <code className="bg-muted px-1 py-0.5 rounded">5551992155747</code>
+                        </p>
+                        <p className="text-xs text-destructive">
+                          ❌ Errado: <code className="bg-muted px-1 py-0.5 rounded">55 51 9215-5747</code> (com espaços/hífens)
                         </p>
                       </div>
 
                       <div className="bg-muted/50 p-4 rounded-lg space-y-2">
-                        <p className="text-sm font-semibold">Número atual configurado:</p>
+                        <p className="text-sm font-semibold">Preview do número:</p>
                         <p className="text-sm text-muted-foreground font-mono">
-                          {settings?.whatsappNumber || 'Não configurado'}
+                          {settings?.whatsappNumber ? 
+                            `https://wa.me/${settings.whatsappNumber.replace(/[\s\-\(\)]/g, '')}` : 
+                            'Não configurado'}
                         </p>
                         <p className="text-xs text-muted-foreground mt-2">
                           Este número será usado para:
@@ -969,6 +995,16 @@ export default function Admin() {
                           <li>Botão de contato no header</li>
                           <li>Botão de contato no footer</li>
                         </ul>
+                      </div>
+
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4 rounded-lg">
+                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                          💡 Dica importante:
+                        </p>
+                        <p className="text-xs text-blue-800 dark:text-blue-200">
+                          O sistema irá remover automaticamente espaços, hífens e parênteses ao salvar. 
+                          Mas é recomendado inserir apenas números para evitar erros.
+                        </p>
                       </div>
 
                       <Button type="submit" className="w-full">
